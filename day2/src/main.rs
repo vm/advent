@@ -1,16 +1,16 @@
 use std::io::prelude::*;
 use std::fs::File;
 
-struct Dimensions {
+struct Present {
     length: usize,
     width: usize,
     height: usize,
 }
 
-impl Dimensions {
-    fn new(line: String) -> Dimensions {
+impl Present {
+    fn new(line: String) -> Present {
         let (length, width, height) = Self::parse_line(line);
-        Dimensions {
+        Present {
             length: length,
             width: width,
             height: height,
@@ -36,10 +36,17 @@ impl Dimensions {
             .iter()
             .fold(smallest, |acc, side| 2 * side + acc)
     }
+
+    fn ribbon_len(&self) -> usize {
+        let mut dimensions = vec![self.length, self.height, self.width];
+        dimensions.sort();
+        let (first, second) = (dimensions[0], dimensions[1]);
+        first * 2 + second * 2 + dimensions.iter().fold(1, |acc, dim| dim * acc)
+    }
 }
 
 struct Presents {
-    presents: Vec<Dimensions>,
+    presents: Vec<Present>,
 }
 
 impl Presents {
@@ -49,14 +56,20 @@ impl Presents {
         }
     }
 
-    fn add(&mut self, present: Dimensions) {
+    fn add(&mut self, present: Present) {
         self.presents.push(present)
     }
 
-    fn wrapping_paper(&mut self) -> usize {
+    fn wrapping_paper(&self) -> usize {
         self.presents
             .iter()
             .fold(0, |acc, present| present.surface_area() + acc)
+    }
+
+    fn ribbon(&self) -> usize {
+        self.presents
+            .iter()
+            .fold(0, |acc, present| present.ribbon_len() + acc)
     }
 }
 
@@ -72,7 +85,8 @@ fn main() {
         if line == "" {
             break
         }
-        presents.add(Dimensions::new(line.to_owned()))
+        presents.add(Present::new(line.to_owned()))
     }
-    println!("total sq feet of wrapping paper: {}", presents.wrapping_paper())
+    println!("total sq feet of wrapping paper: {}", presents.wrapping_paper());
+    println!("total feet of ribbon: {}", presents.ribbon());
 }
