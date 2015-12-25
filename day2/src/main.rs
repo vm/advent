@@ -18,7 +18,10 @@ impl Present {
     }
 
     fn parse_line(line: String) -> (usize, usize, usize) {
-        let split = line.trim().split('x').collect::<Vec<_>>();
+        let split = line
+            .trim()
+            .split('x')
+            .collect::<Vec<_>>();
         (split[0].parse().unwrap(),
          split[1].parse().unwrap(),
          split[2].parse().unwrap())
