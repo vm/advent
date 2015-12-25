@@ -18,7 +18,10 @@ impl Present {
     }
 
     fn parse_line(line: String) -> (usize, usize, usize) {
-        let split = line.trim().split('x').collect::<Vec<_>>();
+        let split = line
+            .trim()
+            .split('x')
+            .collect::<Vec<_>>();
         (split[0].parse().unwrap(),
          split[1].parse().unwrap(),
          split[2].parse().unwrap())
@@ -81,10 +84,7 @@ fn main() {
         Err(why) => panic!("Exited because: {}", why),
     };
     let mut presents = Presents::new();
-    for line in input.split('\n') {
-        if line == "" {
-            break
-        }
+    for line in input.lines() {
         presents.add(Present::new(line.to_owned()))
     }
     println!("total sq feet of wrapping paper: {}", presents.wrapping_paper());
