@@ -2,6 +2,23 @@ use std::collections::HashMap;
 use std::io::prelude::*;
 use std::fs::File;
 
+enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+fn to_direction(c: char) -> Direction {
+    match c {
+        '^' => Direction::Up,
+        '>' => Direction::Right,
+        'v' => Direction::Down,
+        '<' => Direction::Left,
+        _ => unreachable!(),
+    }
+}
+
 struct Grid {
     map: HashMap<(isize, isize), isize>,
     santa_turn: bool,
@@ -32,7 +49,7 @@ impl Grid {
         self.map.len()
     }
 
-    fn move_santas(&mut self, direction: char) {
+    fn move_santas(&mut self, direction: Direction) {
         if self.santa_turn {
             self.santa_loc = Self::next_coordinates(direction, self.santa_loc);
         } else {
@@ -42,14 +59,13 @@ impl Grid {
         self.santa_turn = !self.santa_turn;
     }
 
-    fn next_coordinates(direction: char, coordinates: (isize, isize)) -> (isize, isize) {
+    fn next_coordinates(direction: Direction, coordinates: (isize, isize)) -> (isize, isize) {
         let (x, y) = coordinates;
         match direction {
-            '^' => (x, y + 1),
-            '>' => (x + 1, y),
-            'v' => (x, y - 1),
-            '<' => (x - 1, y),
-            _ => unreachable!(),
+            Direction::Up => (x, y + 1),
+            Direction::Right => (x + 1, y),
+            Direction::Down => (x, y - 1),
+            Direction::Left => (x - 1, y),
         }
     }
 }
@@ -59,8 +75,8 @@ fn main() {
     let mut file = File::open("./input.txt").unwrap();
     file.read_to_string(&mut input);
     let mut grid = Grid::new();
-    for direction in input.chars() {
-        grid.move_santas(direction)
+    for direction in input.chars().map(to_direction) {
+        grid.move_santas(direction);
     }
     println!("visited: {}", grid.num_visited())
 }
