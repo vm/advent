@@ -84,10 +84,7 @@ fn main() {
         Err(why) => panic!("Exited because: {}", why),
     };
     let mut presents = Presents::new();
-    for line in input.split('\n') {
-        if line == "" {
-            break
-        }
+    for line in input.lines() {
         presents.add(Present::new(line.to_owned()))
     }
     println!("total sq feet of wrapping paper: {}", presents.wrapping_paper());
