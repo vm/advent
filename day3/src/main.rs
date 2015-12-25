@@ -19,11 +19,13 @@ fn to_direction(c: char) -> Direction {
     }
 }
 
+type Coordinate = (isize, isize);
+
 struct Grid {
-    map: HashMap<(isize, isize), isize>,
+    map: HashMap<Coordinate, isize>,
     santa_turn: bool,
-    santa_loc: (isize, isize),
-    robo_loc: (isize, isize),
+    santa_loc: Coordinate,
+    robo_loc: Coordinate,
 }
 
 impl Grid {
@@ -59,7 +61,7 @@ impl Grid {
         self.santa_turn = !self.santa_turn;
     }
 
-    fn next_coordinates(direction: Direction, coordinates: (isize, isize)) -> (isize, isize) {
+    fn next_coordinates(direction: Direction, coordinates: Coordinate) -> Coordinate {
         let (x, y) = coordinates;
         match direction {
             Direction::Up => (x, y + 1),
