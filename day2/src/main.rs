@@ -1,3 +1,5 @@
+#![feature(iter_arith)]
+
 use std::io::prelude::*;
 use std::fs::File;
 
@@ -66,27 +68,27 @@ impl Presents {
     fn wrapping_paper(&self) -> usize {
         self.presents
             .iter()
-            .fold(0, |acc, present| present.surface_area() + acc)
+            .map(Present::surface_area)
+            .sum()
     }
 
-    fn ribbon(&self) -> usize {
+    fn ribbon_len(&self) -> usize {
         self.presents
             .iter()
-            .fold(0, |acc, present| present.ribbon_len() + acc)
+            .map(Present::ribbon_len)
+            .sum()
     }
 }
 
 
 fn main() {
     let mut input = String::new();
-    match File::open("./input.txt") {
-        Ok(mut file) => file.read_to_string(&mut input),
-        Err(why) => panic!("Exited because: {}", why),
-    };
+    let mut file = File::open("./input.txt").unwrap();
+    file.read_to_string(&mut input);
     let mut presents = Presents::new();
     for line in input.lines() {
         presents.add(Present::new(line.to_owned()))
     }
     println!("total sq feet of wrapping paper: {}", presents.wrapping_paper());
-    println!("total feet of ribbon: {}", presents.ribbon());
+    println!("total feet of ribbon: {}", presents.ribbon_len());
 }
