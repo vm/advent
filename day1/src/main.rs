@@ -15,10 +15,8 @@ fn main() {
             ')' => total -= 1,
             _ => unreachable!("Shouldn't get any other chars"),
         };
-        if let None = first_neg {
-            if total < 0 {
-                first_neg = Some(i + 1);
-            }
+        if total < 0 && first_neg.is_none() {
+            first_neg = Some(i + 1);
         }
     }
     println!("Total: {}", total);
